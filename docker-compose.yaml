@@ -1,0 +1,29 @@
+version: "3.7"
+services:
+  storage:
+    image: postgres:14.1
+    restart: always
+    environment:
+      POSTGRES_PASSWORD: '${POSTGRES_PASS}'
+      POSTGRES_USER: '${POSTGRES_USER}'
+    volumes:
+      - postgres_data:/var/lib/postgresql/data/
+  graphql-engine:
+    restart: always
+    image: hasura/graphql-engine:v2.6.2
+    volumes:
+      - ./hasura/migrations:/hasura-migrations
+      - ./hasura/metadata:/hasura-metadata
+    ports:
+      - "8564:8080"
+    depends_on:
+    - "storage"
+    environment:
+      HASURA_GRAPHQL_DATABASE_URL: postgres://${POSTGRES_USER}:${POSTGRES_PASS}@storage:5432/${POSTGRES_USER}
+      HASURA_GRAPHQL_ENABLE_CONSOLE: "true" # set to "false" to disable console
+      HASURA_GRAPHQL_ENABLED_LOG_TYPES: startup, http-log, webhook-log, websocket-log, query-log
+      HASURA_GRAPHQL_ENABLE_TELEMETRY: "false"
+      HASURA_GRAPHQL_UNAUTHORIZED_ROLE: "voyeur"
+      HASURA_GRAPHQL_ADMIN_SECRET: ${SECRET}
+volumes:
+  postgres_data:
