@@ -1,0 +1,5 @@
+-- Could not auto-generate a down migration.
+-- Please write an appropriate down migration for the SQL below:
+-- INSERT INTO role (value, comment) VALUES
+--   ('user', 'Ordinary users'),
+--   ('administrator', 'Users with the privilege to edit tasks and set status');
